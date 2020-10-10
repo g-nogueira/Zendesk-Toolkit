@@ -12,10 +12,9 @@
 			"dependencies/zendesk.js",
 			"core/ticketHelper.js",
 			"background/shared.js",
-			"background/background.js",
+			"background/onInstalled.js",
 			"background/onDeterminingFilename.js",
 			"background/onAlarm.js",
-			"background/onInstalled.js",
 			"background/onMessage.js"
 		],
 		"persistence": false

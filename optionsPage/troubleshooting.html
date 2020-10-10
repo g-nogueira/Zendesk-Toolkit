@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="width:50%">
+    <style>
+        body {
+            width: 50%;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: -webkit-fill-available;
+        }
+
+        input~small {
+            display: block;
+        }
+    </style>
+    <form id="options" action="" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);padding: 10px;margin-top: 10px;border-radius: 5px;">
+        <h2>Download</h2>
+        <div>
+            <label for="filepath" style="display:block;">Export Storage</label>
+            <button>Export</button>
+        </div>
+    </form>
+
+
+
+
+
+    <script src="/core/constants.js"></script>
+    <script src="/dependencies/chromeAsync.js"></script>
+    <script src="/dependencies/zendesk.js"></script>
+    <script src="/core/ticketHelper.js"></script>
+    <script src="optionsPage.js"></script>
+</body>
+
+</html>
