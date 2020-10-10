@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <style>
+        body {
+            width: 500px;
+        }
+
+        .ticket-status-open {
+            color: #E34F32;
+        }
+
+        .ticket-status-pending {
+            color: #3091EC;
+        }
+
+        .ticket-status-solved {
+            color: #87929D;
+        }
+
+        .ticket-status-hold {
+            color: #2F3941;
+        }
+
+        #ulWatchlist,
+        #ulNotificationlist {
+            list-style: none;
+            padding: 0;
+        }
+
+        #ulWatchlist li #buttonRemove,
+        #ulNotificationlist li #buttonRemove {
+            display: none;
+        }
+
+        #ulWatchlist li:hover #buttonRemove,
+        #ulNotificationlist li:hover #buttonRemove {
+            display: inline;
+            cursor: pointer;
+        }
+
+        #ulWatchlist li,
+        #ulNotificationlist li {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        #ulWatchlist li .container {
+            display: inline-flex;
+        }
+
+        #ulNotificationlist li #timestamp {
+            margin-right: .2rem;
+        }
+
+        #ulWatchlist li #ticketStatus,
+        #ulWatchlist li #ticketPriority {
+            width: 3rem;
+        }
+
+        #ulWatchlist li #ticketId {
+            width: 3.1rem;
+            margin: 0 0.5rem;
+        }
+
+        #ulWatchlist li #buttonRemove {
+            margin: 0 0.2rem;
+        }
+
+        #dinamicContent {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #dinamicContent+* {
+            display: flex;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <div>
+        <a id="showQr" href="#">QR Code</a>
+        <a id="showCountryCodes" href="#">Country Codes</a>
+    </div>
+
+    <div id="tabsContents">
+        <div id="qrContent" class="flex hidden" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
+            <canvas id="qr"></canvas>
+            <input type="text" style="width:100%" id="qrUrl" placeholder="Enter your URL here...">
+        </div>
+        <div id="countryCodesContent" class="flex hidden" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
+            <input list="countryCodes" placeholder="Type the country code here..." style="width:40%">
+            <datalist id="countryCodes">
+                <option>+93 - Afghanistan</option>
+                <option>+355 - Albania</option>
+                <option>+213 - Algeria</option>
+                <option>+1 - American Samoa</option>
+                <option>+376 - Andorra</option>
+                <option>+244 - Angola</option>
+                <option>+1 - Anguilla</option>
+                <option>+1 - Antigua And Barbuda</option>
+                <option>+54 - Argentina</option>
+                <option>+374 - Armenia</option>
+                <option>+297 - Aruba</option>
+                <option>+247 - Ascension Island</option>
+                <option>+61 - Australia</option>
+                <option>+43 - Austria</option>
+                <option>+994 - Azerbaijan</option>
+                <option>+1 - Bahamas</option>
+                <option>+973 - Bahrain</option>
+                <option>+880 - Bangladesh</option>
+                <option>+1 - Barbados</option>
+                <option>+375 - Belarus</option>
+                <option>+32 - Belgium</option>
+                <option>+501 - Belize</option>
+                <option>+229 - Benin</option>
+                <option>+1 - Bermuda</option>
+                <option>+975 - Bhutan</option>
+                <option>+591 - Bolivia</option>
+                <option>+387 - Bosnia And Herzegovina</option>
+                <option>+267 - Botswana</option>
+                <option>+55 - Brazil</option>
+                <option>+673 - Brunei Darussalam</option>
+                <option>+359 - Bulgaria</option>
+                <option>+226 - Burkina Faso</option>
+                <option>+257 - Burundi</option>
+                <option>+855 - Cambodia</option>
+                <option>+237 - Cameroon</option>
+                <option>+1 - Canada</option>
+                <option>+238 - Cape Verde</option>
+                <option>+1 - Cayman Islands</option>
+                <option>+236 - Central African Republic</option>
+                <option>+235 - Chad</option>
+                <option>+56 - Chile</option>
+                <option>+86 - China</option>
+                <option>+57 - Colombia</option>
+                <option>+269 - Comoros</option>
+                <option>+242 - Congo</option>
+                <option>+243 - Congo, Democratic Republic</option>
+                <option>+682 - Cook Islands</option>
+                <option>+506 - Costa Rica</option>
+                <option>+225 - Cote D'Ivoire</option>
+                <option>+385 - Croatia</option>
+                <option>+357 - Cyprus</option>
+                <option>+420 - Czech Republic</option>
+                <option>+45 - Denmark</option>
+                <option>+253 - Djibouti</option>
+                <option>+1 - Dominica</option>
+                <option>+1 - Dominican Republic</option>
+                <option>+593 - Ecuador</option>
+                <option>+20 - Egypt</option>
+                <option>+503 - El Salvador</option>
+                <option>+240 - Equatorial Guinea</option>
+                <option>+291 - Eritrea</option>
+                <option>+372 - Estonia</option>
+                <option>+251 - Ethiopia</option>
+                <option>+500 - Falkland Islands (Malvinas)</option>
+                <option>+298 - Faroe Islands</option>
+                <option>+679 - Fiji</option>
+                <option>+358 - Finland</option>
+                <option>+33 - France</option>
+                <option>+594 - French Guiana</option>
+                <option>+689 - French Polynesia</option>
+                <option>+241 - Gabon</option>
+                <option>+220 - Gambia</option>
+                <option>+995 - Georgia</option>
+                <option>+49 - Germany</option>
+                <option>+233 - Ghana</option>
+                <option>+350 - Gibraltar</option>
+                <option>+30 - Greece</option>
+                <option>+299 - Greenland</option>
+                <option>+1 - Grenada</option>
+                <option>+590 - Guadeloupe</option>
+                <option>+1 - Guam</option>
+                <option>+502 - Guatemala</option>
+                <option>+44 - Guernsey</option>
+                <option>+224 - Guinea</option>
+                <option>+245 - Guinea-Bissau</option>
+                <option>+592 - Guyana</option>
+                <option>+509 - Haiti</option>
+                <option>+39 - Holy See (Vatican City State)</option>
+                <option>+504 - Honduras</option>
+                <option>+852 - Hong Kong</option>
+                <option>+36 - Hungary</option>
+                <option>+354 - Iceland</option>
+                <option>+91 - India</option>
+                <option>+62 - Indonesia</option>
+                <option>+964 - Iraq</option>
+                <option>+353 - Ireland</option>
+                <option>+44 - Isle Of Man</option>
+                <option>+972 - Israel</option>
+                <option>+39 - Italy</option>
+                <option>+1 - Jamaica</option>
+                <option>+81 - Japan</option>
+                <option>+44 - Jersey</option>
+                <option>+962 - Jordan</option>
+                <option>+7 - Kazakhstan</option>
+                <option>+254 - Kenya</option>
+                <option>+686 - Kiribati</option>
+                <option>+82 - Korea</option>
+                <option>+965 - Kuwait</option>
+                <option>+996 - Kyrgyzstan</option>
+                <option>+856 - Lao People's Democratic Republic</option>
+                <option>+371 - Latvia</option>
+                <option>+961 - Lebanon</option>
+                <option>+266 - Lesotho</option>
+                <option>+231 - Liberia</option>
+                <option>+218 - Libyan Arab Jamahiriya</option>
+                <option>+423 - Liechtenstein</option>
+                <option>+370 - Lithuania</option>
+                <option>+352 - Luxembourg</option>
+                <option>+853 - Macao</option>
+                <option>+389 - Macedonia</option>
+                <option>+261 - Madagascar</option>
+                <option>+265 - Malawi</option>
+                <option>+60 - Malaysia</option>
+                <option>+960 - Maldives</option>
+                <option>+223 - Mali</option>
+                <option>+356 - Malta</option>
+                <option>+692 - Marshall Islands</option>
+                <option>+596 - Martinique</option>
+                <option>+222 - Mauritania</option>
+                <option>+230 - Mauritius</option>
+                <option>+262 - Mayotte</option>
+                <option>+52 - Mexico</option>
+                <option>+691 - Micronesia, Federated States Of</option>
+                <option>+373 - Moldova</option>
+                <option>+377 - Monaco</option>
+                <option>+976 - Mongolia</option>
+                <option>+382 - Montenegro</option>
+                <option>+1 - Montserrat</option>
+                <option>+212 - Morocco</option>
+                <option>+258 - Mozambique</option>
+                <option>+95 - Myanmar</option>
+                <option>+264 - Namibia</option>
+                <option>+674 - Nauru</option>
+                <option>+977 - Nepal</option>
+                <option>+31 - Netherlands</option>
+                <option>+0 - Netherlands Antilles</option>
+                <option>+687 - New Caledonia</option>
+                <option>+64 - New Zealand</option>
+                <option>+505 - Nicaragua</option>
+                <option>+227 - Niger</option>
+                <option>+234 - Nigeria</option>
+                <option>+683 - Niue</option>
+                <option>+672 - Norfolk Island</option>
+                <option>+47 - Norway</option>
+                <option>+968 - Oman</option>
+                <option>+92 - Pakistan</option>
+                <option>+680 - Palau</option>
+                <option>+970 - Palestinian Territory, Occupied</option>
+                <option>+507 - Panama</option>
+                <option>+675 - Papua New Guinea</option>
+                <option>+595 - Paraguay</option>
+                <option>+51 - Peru</option>
+                <option>+63 - Philippines</option>
+                <option>+48 - Poland</option>
+                <option>+351 - Portugal</option>
+                <option>+1 - Puerto Rico</option>
+                <option>+974 - Qatar</option>
+                <option>+262 - Reunion</option>
+                <option>+40 - Romania</option>
+                <option>+7 - Russian Federation</option>
+                <option>+250 - Rwanda</option>
+                <option>+290 - Saint Helena</option>
+                <option>+1 - Saint Kitts And Nevis</option>
+                <option>+1 - Saint Lucia</option>
+                <option>+508 - Saint Pierre And Miquelon</option>
+                <option>+1 - Saint Vincent And Grenadines</option>
+                <option>+378 - San Marino</option>
+                <option>+239 - Sao Tome And Principe</option>
+                <option>+966 - Saudi Arabia</option>
+                <option>+221 - Senegal</option>
+                <option>+381 - Serbia</option>
+                <option>+248 - Seychelles</option>
+                <option>+232 - Sierra Leone</option>
+                <option>+65 - Singapore</option>
+                <option>+421 - Slovakia</option>
+                <option>+386 - Slovenia</option>
+                <option>+677 - Solomon Islands</option>
+                <option>+252 - Somalia</option>
+                <option>+27 - South Africa</option>
+                <option>+211 - South Sudan</option>
+                <option>+34 - Spain</option>
+                <option>+94 - Sri Lanka</option>
+                <option>+597 - Suriname</option>
+                <option>+268 - Swaziland</option>
+                <option>+46 - Sweden</option>
+                <option>+41 - Switzerland</option>
+                <option>+886 - Taiwan</option>
+                <option>+992 - Tajikistan</option>
+                <option>+255 - Tanzania</option>
+                <option>+66 - Thailand</option>
+                <option>+670 - Timor-Leste</option>
+                <option>+228 - Togo</option>
+                <option>+690 - Tokelau</option>
+                <option>+1 - Trinidad And Tobago</option>
+                <option>+216 - Tunisia</option>
+                <option>+90 - Turkey</option>
+                <option>+993 - Turkmenistan</option>
+                <option>+1 - Turks And Caicos Islands</option>
+                <option>+688 - Tuvalu</option>
+                <option>+256 - Uganda</option>
+                <option>+380 - Ukraine</option>
+                <option>+971 - United Arab Emirates</option>
+                <option>+44 - United Kingdom</option>
+                <option>+1 - United States</option>
+                <option>+598 - Uruguay</option>
+                <option>+998 - Uzbekistan</option>
+                <option>+678 - Vanuatu</option>
+                <option>+58 - Venezuela</option>
+                <option>+84 - Viet Nam</option>
+                <option>+1 - Virgin Islands, British</option>
+                <option>+1 - Virgin Islands, U.S.</option>
+                <option>+681 - Wallis And Futuna</option>
+                <option>+967 - Yemen</option>
+                <option>+260 - Zambia</option>
+                <option>+263 - Zimbabwe</option>
+                <option>+1</option>
+                <option>+599</option>
+            </datalist>
+        </div>
+    </div>
+
+    <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
+        <h3>Watch List</h3>
+        <a href="#" id="buttonReload">Reload</a>
+    </div>
+    <ul id="ulWatchlist"></ul>
+
+    <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
+        <h3>Notifications</h3>
+        <a href="#" id="buttonClear">Clear</a>
+    </div>
+
+
+    <ul id="ulNotificationlist"></ul>
+
+    <template id="notificationListItem">
+        <li>
+            <span id="timestamp" title="Timestamp">Timestamp</span>
+            <span id="message">Message</span>
+        </li>
+    </template>
+
+    <template id="notificationEmptyList">
+        <li>You don't have new notifications...</li>
+    </template>
+
+    <template id="ticketListItem">
+        <li>
+            <div class="container">
+                <div id="buttonRemove" title="Remove">X</div>
+                <div id="ticketStatus" title="">Status</div>
+                <div id="ticketId"></div>
+                <div id="ticketPriority" title="">Priority</div>
+                <a href="" id="ticketTitle"></a>
+            </div>
+        </li>
+    </template>
+
+    <template id="ticketEmptyList">
+        <li>The list is empty...</li>
+    </template>
+
+    <script src="/dependencies/chromeAsync.js"></script>
+    <script src="/dependencies/QRious.js"></script>
+    <script src="/core/constants.js"></script>
+    <script src="/core/notificationHelper.js"></script>
+    <script src="/dependencies/zendesk.js"></script>
+    <script src="/core/ticketHelper.js"></script>
+    <script src="browserAction.js"></script>
+</body>
+
+</html>

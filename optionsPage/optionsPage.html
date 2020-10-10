@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="width:50%">
+    <style>
+        body {
+            width: 50%;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: -webkit-fill-available;
+        }
+
+        input~small {
+            display: block;
+        }
+    </style>
+    <form id="options" action="" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);padding: 10px;margin-top: 10px;border-radius: 5px;">
+        <h2>Download</h2>
+        <div>
+            <label for="filepath" style="display:block;">Filename</label>
+            <input type="text" id="filepath" placeholder="Insert the folder name here">
+            <small>Use the "&lt;ticket_id&gt;" placeholder to replace for the ticket id</small>
+            <small>Use the "&lt;file_name&gt;" placeholder to replace for the file name</small>
+            <small>Use the "&lt;date&gt;" placeholder to replace for the UTC date</small>
+            <small>Use the "&lt;time&gt;" placeholder to replace for the UTC time</small>
+        </div>
+        <div>
+            <label for="condition_urlincludes" style="display:block;">Download Rename Condition: Url Includes</label>
+            <input type="text" id="condition_urlincludes" placeholder="" value="https://supportoutsystems.zendesk.com/agent/tickets">
+            <small>The origin url from the download file</small>
+        </div>
+
+        <h2>Image on New Window</h2>
+        <div>
+            <label for="fileextensions" style="display:block;">Download Rename Condition: Url Includes</label>
+            <input type="text" id="fileextensions" placeholder="jpg jpeg png" value="">
+            <small>The file extensions to open on new window instead of the default new tab</small>
+        </div>
+
+        <h2>Tickets</h2>
+        <div>
+            <label for="intervalReloadWatchingTickets">Ticket Reload Interval (minutes)</label>
+            <input type="text" id="intervalReloadWatchingTickets">
+            <small></small>
+        </div>
+    </form>
+
+
+
+
+
+    <script src="/core/constants.js"></script>
+    <script src="/dependencies/chromeAsync.js"></script>
+    <script src="/dependencies/zendesk.js"></script>
+    <script src="/core/ticketHelper.js"></script>
+    <script src="optionsPage.js"></script>
+</body>
+
+</html>

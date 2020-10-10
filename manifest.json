@@ -1,0 +1,50 @@
+{
+	"manifest_version": 2,
+	"name": "Zendesk Multitool",
+	"description": "",
+	"version": "0.0.1",
+	"background": {
+		"scripts": [
+			"dependencies/string.js",
+			"core/constants.js",
+			"dependencies/chromeAsync.js",
+			"core/notificationHelper.js",
+			"dependencies/zendesk.js",
+			"core/ticketHelper.js",
+			"background/shared.js",
+			"background/background.js",
+			"background/onDeterminingFilename.js",
+			"background/onAlarm.js",
+			"background/onInstalled.js",
+			"background/onMessage.js"
+		],
+		"persistence": false
+	},
+	"browser_action": {
+		"default_title": "Zendesk Multitool",
+		"default_popup": "browserAction/browserAction.html"
+	},
+	"options_page": "optionsPage/optionsPage.html",
+	"content_scripts": [
+		{
+			"matches": [
+				"https://supportoutsystems.zendesk.com/*"
+			],
+			"js": [
+				"core/constants.js",
+				"dependencies/chromeAsync.js",
+				"contentScript.js"
+			]
+		}
+	],
+	"permissions": [
+		"downloads",
+		"storage",
+		"contextMenus",
+		"tabs",
+		"activeTab",
+		"alarms",
+		"notifications"
+	],
+	"content_security_policy": "script-src 'self'; object-src 'self';"
+}
