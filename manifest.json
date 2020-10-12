@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "Zendesk Multitool",
+	"name": "Zendesk Tookit",
 	"description": "",
 	"version": "0.0.1",
 	"background": {
@@ -20,14 +20,14 @@
 		"persistence": false
 	},
 	"browser_action": {
-		"default_title": "Zendesk Multitool",
+		"default_title": "Zendesk Tookit",
 		"default_popup": "browserAction/browserAction.html"
 	},
 	"options_page": "optionsPage/optionsPage.html",
 	"content_scripts": [
 		{
 			"matches": [
-				"https://supportoutsystems.zendesk.com/*"
+				"https://*.zendesk.com/*"
 			],
 			"js": [
 				"core/constants.js",

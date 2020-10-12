@@ -103,7 +103,7 @@ async function updateSmallWatchList() {
 
 function refreshContextMenu() {
     var parentId = chrome.contextMenus.create({
-        title: "Zendesk Multitool",
+        title: "Zendesk Tookit",
         contexts: ["page"]
     });
 

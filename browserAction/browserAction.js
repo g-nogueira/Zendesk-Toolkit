@@ -4,7 +4,7 @@
 
     // As soon as the browseraction opens, Clear badge notifications
     chrome.browserAction.setBadgeText({ text: "" });
-    chrome.browserAction.setTitle({ title: "Zendesk Multitool" });
+    chrome.browserAction.setTitle({ title: "Zendesk Tookit" });
 
     // Set up QRious
     var qr = new QRious({ element: document.getElementById("qr") });
