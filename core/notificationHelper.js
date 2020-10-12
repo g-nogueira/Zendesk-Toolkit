@@ -6,7 +6,7 @@ const notificationHelper = {
      * @param {string} object.message
      * @param {string} object.url
      */
-    async addToNotifications(object) {
+    async addToNotifications(object, increaseBadgeCount = false) {
         var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);
         var unixTimestamp = Math.round((new Date()).getTime() / 1000);
 
@@ -20,6 +20,10 @@ const notificationHelper = {
         });
 
         chromeAsync.storage.sync.set({ [STORAGE_KEYS.NOTIFICATIONS]: notifications });
+
+        if (increaseBadgeCount) {
+            this.appendToBrowserActionTitle(object.message);
+        }
     },
 
     appendToBrowserActionTitle(message) {

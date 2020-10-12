@@ -57,6 +57,17 @@
             <input type="text" id="intervalReloadWatchingTickets">
             <small></small>
         </div>
+
+        <h2>Advanced</h2>
+        <div>
+            <label for="backupStorage" style="display:block;">Backup</label>
+            <input type="button" id="backupStorage" value="Backup">
+        </div>
+        <div>
+            <label for="restoreStorage" style="display:block;">Restore</label>
+            <input type="file" id="backupFile" accept="text/plain">
+            <input type="button" id="restoreStorage" value="Restore">
+        </div>
     </form>
 
 
@@ -67,6 +78,7 @@
     <script src="/dependencies/chromeAsync.js"></script>
     <script src="/dependencies/zendesk.js"></script>
     <script src="/core/ticketHelper.js"></script>
+    <script src="/core/notificationHelper.js"></script>
     <script src="optionsPage.js"></script>
 </body>
 
