@@ -22,7 +22,6 @@ async function addTicketToWatchList(info, tab) {
         ticketId,
         bigTicket.subject
     );
-    notificationHelper.appendToBrowserActionTitle(title);
     notificationHelper.addToNotifications({
         message: title,
         url: ticketURL
@@ -55,7 +54,6 @@ async function updateBigWatchList() {
                 ticket.url
             );
 
-            notificationHelper.appendToBrowserActionTitle(title);
             notificationHelper.addSystemTrayNotification("Ticket Status Changed", title);
             notificationHelper.addToNotifications({
                 message: title,

@@ -6,7 +6,7 @@ const notificationHelper = {
      * @param {string} object.message
      * @param {string} object.url
      */
-    async addToNotifications(object, increaseBadgeCount = false) {
+    async addToNotifications(object, increaseBadgeCount = true) {
         var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);
         var unixTimestamp = Math.round((new Date()).getTime() / 1000);
 

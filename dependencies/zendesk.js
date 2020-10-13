@@ -95,7 +95,6 @@ const _fetch = async (url) => {
     }
     else {
         var message = "Zendesk API fetch failed with status " + resolvedPromise.status + " " + resolvedPromise.statusText;
-        notificationHelper.appendToBrowserActionTitle(message);
         notificationHelper.addToNotifications({ message });
 
         return false;

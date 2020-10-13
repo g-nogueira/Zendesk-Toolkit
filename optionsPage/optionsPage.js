@@ -47,7 +47,7 @@
             window.location.reload();
         } catch (error) {
             e.target.value = "Error: " + error.message;
-            notificationHelper.addToNotifications({ message: error.message }, true);
+            notificationHelper.addToNotifications({ message: error.message });
 
             setTimeout(() => {
                 window.location.reload();
@@ -81,16 +81,14 @@
     }
 
     function downloadFile(filename, text) {
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        element.setAttribute('download', filename);
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
+        var file = new Blob([text], {
+            type: "text/plain"
+        });
+        var element = document.createElement("a");
+        element.download = filename;
+        element.href = window.URL.createObjectURL(file);
+        element.target = "_blank";
         element.click();
-
-        document.body.removeChild(element);
     }
 
     function readFile(file) {
