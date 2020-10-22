@@ -15,7 +15,8 @@
 			"background/onInstalled.js",
 			"background/onDeterminingFilename.js",
 			"background/onAlarm.js",
-			"background/onMessage.js"
+			"background/onMessage.js",
+			"background/exceptionHandler.js"
 		],
 		"persistence": false
 	},
