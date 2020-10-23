@@ -34,6 +34,7 @@ async function updateBigWatchList() {
     bigWatchList = bigWatchList.map(async (ticket) => {
 
         let bigTicket = await zendesk.api.tickets(ticket.id);
+        let ticketComments = await zendesk.api.ticketsComments(ticket.id);
 
         if (!bigTicket) {
             return ticket;
@@ -43,6 +44,11 @@ async function updateBigWatchList() {
         let oldStatus = ticket.ticket.status || "";
         let newStatus = bigTicket.status;
 
+        // Get the most recent and public comment
+        let newComment = ticketComments.comments.filter((ticket) => ticket.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        let oldCommentOn = +ticket.lastCommentOn || null;
+        let newCommentOn = (new Date(newComment.created_at)).getTime();
+
         if (bigTicket && oldStatus !== newStatus) {
 
             var title = String.format(
@@ -50,12 +56,26 @@ async function updateBigWatchList() {
                 ticket.id,
                 ticket.title,
                 oldStatus.toUpperCase(),
-                newStatus.toUpperCase(),
-                ticket.url
+                newStatus.toUpperCase()
             );
 
             notificationHelper.addSystemTrayNotification("Ticket Status Changed", title);
-            notificationHelper.addToNotifications({
+            await notificationHelper.addToNotifications({
+                message: title,
+                url: ticket.url
+            });
+        }
+
+        if (oldCommentOn && oldCommentOn !== newCommentOn) {
+
+            var title = String.format(
+                MESSAGE_TEMPLATES.TICKET_NEW_COMMENT,
+                ticket.id,
+                ticket.title
+            );
+
+            notificationHelper.addSystemTrayNotification("Ticket New Comment", title);
+            await notificationHelper.addToNotifications({
                 message: title,
                 url: ticket.url
             });
@@ -63,6 +83,7 @@ async function updateBigWatchList() {
 
 
         ticket.ticket = bigTicket || ticket.ticket;
+        ticket.lastCommentOn = newCommentOn || ticket.lastCommentOn;
 
         return ticket;
     });

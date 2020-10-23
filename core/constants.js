@@ -30,7 +30,14 @@ const ALARMS = {
 
 const MESSAGE_TEMPLATES = {
     // {0} TicketId, {1} Ticket title, {2} Ticket previous status, {3} Ticket current status
+    // #2403175 - PENDING to OPEN - 'High RDS CPU usage'
     TICKET_STATUS_CHANGED: "#{0} - {2} to {3}  - '{1}' ",
+
     // {0} TicketId, {1} Ticket title
+    // #2403175 - NEW COMMENT - 'High RDS CPU usage'
+    TICKET_NEW_COMMENT: "#{0} - NEW COMMENT  - '{1}' ",
+
+    // {0} TicketId, {1} Ticket title
+    // #2403175 - WATCHING - 'High RDS CPU usage'
     WATCHING_TICKET: "#{0} - WATCHING - '{1}'"
 };

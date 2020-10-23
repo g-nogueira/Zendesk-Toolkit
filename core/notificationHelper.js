@@ -7,28 +7,36 @@ const notificationHelper = {
      * @param {string} object.url
      */
     async addToNotifications(object, increaseBadgeCount = true) {
-        var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);
-        var unixTimestamp = Math.round((new Date()).getTime() / 1000);
+        return new Promise(async (resolve, reject) => {
 
-        notifications = notifications[STORAGE_KEYS.NOTIFICATIONS];
+            var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);
+            var unixTimestamp = Math.round((new Date()).getTime() / 1000);
 
-        notifications.push({
-            timestamp: Math.round((new Date()).getTime() / 1000),
-            readableTimestamp: (new Date(unixTimestamp * 1000)).toLocaleString(),
-            message: object.message,
-            url: object.url || ""
+            notifications = notifications[STORAGE_KEYS.NOTIFICATIONS];
+
+            notifications.push({
+                timestamp: Math.round((new Date()).getTime() / 1000),
+                readableTimestamp: (new Date(unixTimestamp * 1000)).toLocaleString(),
+                message: object.message,
+                url: object.url || ""
+            });
+
+            await chromeAsync.storage.sync.set({ [STORAGE_KEYS.NOTIFICATIONS]: notifications });
+
+            if (increaseBadgeCount) {
+                await this.appendToBrowserActionTitle(object.message);
+            }
+
+            resolve();
         });
 
-        chromeAsync.storage.sync.set({ [STORAGE_KEYS.NOTIFICATIONS]: notifications });
-
-        if (increaseBadgeCount) {
-            this.appendToBrowserActionTitle(object.message);
-        }
     },
 
-    appendToBrowserActionTitle(message) {
-        chromeAsync.browserAction.increaseBadgeCount();
-        chromeAsync.browserAction.increaseTitle({ title: message });
+    async appendToBrowserActionTitle(message) {
+        return new Promise((resolve, reject) => {
+            chromeAsync.browserAction.increaseBadgeCount();
+            chromeAsync.browserAction.increaseTitle({ title: message }).then(resolve);
+        });
     },
 
     addSystemTrayNotification(title, message) {
