@@ -18,7 +18,9 @@ const notificationHelper = {
                 timestamp: Math.round((new Date()).getTime() / 1000),
                 readableTimestamp: (new Date(unixTimestamp * 1000)).toLocaleString(),
                 message: object.message,
-                url: object.url || ""
+                url: object.url || "",
+                detailId: object.detailId,
+                ticketId: object.ticketId
             });
 
             await chromeAsync.storage.sync.set({ [STORAGE_KEYS.NOTIFICATIONS]: notifications });

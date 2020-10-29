@@ -71,12 +71,17 @@ const zendesk = {
                 return false;
             }
         },
-        async ticketsComments(ticketId) {
+        async ticketsComments(ticketId, commentId) {
+
             var url = `https://supportoutsystems.zendesk.com/api/v2/tickets/${ticketId}/comments.json?include=users`;
             var resolvedPromise = await _fetch(url);
 
             if (resolvedPromise.ok) {
+
                 var finalResponse = await resolvedPromise.json();
+                if (commentId) {
+                    finalResponse.comments = finalResponse.comments.filter((comment) => +comment.id === +commentId);
+                }
                 return finalResponse;
             }
             else {

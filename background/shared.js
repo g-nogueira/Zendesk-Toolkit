@@ -45,9 +45,9 @@ async function updateBigWatchList() {
         let newStatus = bigTicket.status;
 
         // Get the most recent and public comment
-        let newComment = ticketComments.comments.filter((ticket) => ticket.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        let newComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
         let oldCommentOn = +ticket.lastCommentOn || null;
-        let newCommentOn = (new Date(newComment.created_at)).getTime();
+        let newCommentOn = newComment ? (new Date(newComment.created_at)).getTime() : null;
 
         if (bigTicket && oldStatus !== newStatus) {
 
@@ -62,11 +62,12 @@ async function updateBigWatchList() {
             notificationHelper.addSystemTrayNotification("Ticket Status Changed", title);
             await notificationHelper.addToNotifications({
                 message: title,
-                url: ticket.url
+                url: ticket.url,
+                ticketId: ticket.id
             });
         }
 
-        if (oldCommentOn && oldCommentOn !== newCommentOn) {
+        if (newComment && oldCommentOn !== newCommentOn) {
 
             var title = String.format(
                 MESSAGE_TEMPLATES.TICKET_NEW_COMMENT,
@@ -77,7 +78,9 @@ async function updateBigWatchList() {
             notificationHelper.addSystemTrayNotification("Ticket New Comment", title);
             await notificationHelper.addToNotifications({
                 message: title,
-                url: ticket.url
+                url: ticket.url,
+                ticketId: ticket.id,
+                detailId: newComment.id
             });
         }
 

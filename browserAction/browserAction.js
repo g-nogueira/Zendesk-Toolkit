@@ -26,7 +26,8 @@
         containers: {
             tabsContents: document.getElementById("tabsContents"),
             QRCodeContent: document.getElementById("qrContent"),
-            countryCodesContent: document.getElementById("countryCodesContent")
+            countryCodesContent: document.getElementById("countryCodesContent"),
+            detailViewer: document.getElementById("detailViewContent"),
         },
         lists: {
             watchList: document.getElementById("ulWatchlist"),
@@ -47,8 +48,7 @@
         // Toggles countryCodes tab
         toggleContent(HTMLElements.containers.countryCodesContent);
         HTMLElements.inputs.countryCodes.focus();
-    }
-    );
+    });
     HTMLElements.buttons.reloadWatchList.addEventListener("click", () =>
         // Sends message to listener to update tickets
         chromeAsync.runtime.sendMessage({ action: MESSAGE_ACTIONS.UPDATE_ALL_TICKETS }).then(reloadWatchList)
@@ -56,6 +56,7 @@
     HTMLElements.buttons.clearNotifications.addEventListener("click", async () =>
         notificationHelper.clearAllNotifications().then(reloadNotificationList)
     );
+
     HTMLElements.inputs.QRCodeURL.addEventListener("input", generateQrCode);
 
     function generateQrCode(e) {
@@ -100,13 +101,30 @@
                 // Sets up the <li> elements and its properties
                 let node = notificationListItem.content.cloneNode(true);
 
+                node.querySelector("#buttonPreview").dataset.detailId = notification.detailId;
                 node.querySelector("#timestamp").innerHTML = notification.readableTimestamp
                 node.querySelector("#message").innerHTML = `<a href="${notification.url}">${notification.message}</a>`;
                 node.querySelector("#message").title = notification.message;
 
+                node.querySelector("#buttonPreview").addEventListener("click", (e) => {
+                    if (notification.ticketId && notification.detailId) {
+                        toggleContent(HTMLElements.containers.detailViewer);
+                        insertTicketComment(notification.ticketId, notification.detailId);
+                    }
+                });
                 node.firstElementChild.dataset.timestamp = notification.timestamp;
                 HTMLElements.lists.notificationList.appendChild(node);
             });
+        }
+    }
+
+    async function insertTicketComment(ticketId, commentId) {
+        HTMLElements.containers.detailViewer.innerHTML = "...";
+
+        var response = await zendesk.api.ticketsComments(ticketId, commentId);
+
+        if (response) {
+            HTMLElements.containers.detailViewer.innerHTML = response.comments[0].html_body;
         }
     }
 

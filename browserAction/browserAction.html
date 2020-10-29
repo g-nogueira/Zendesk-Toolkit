@@ -34,12 +34,14 @@
         }
 
         #ulWatchlist li #buttonRemove,
-        #ulNotificationlist li #buttonRemove {
+        #ulNotificationlist li #buttonRemove,
+        #ulNotificationlist li #buttonPreview {
             display: none;
         }
 
         #ulWatchlist li:hover #buttonRemove,
-        #ulNotificationlist li:hover #buttonRemove {
+        #ulNotificationlist li:hover #buttonRemove,
+        #ulNotificationlist li:hover #buttonPreview {
             display: inline;
             cursor: pointer;
         }
@@ -69,7 +71,8 @@
             margin: 0 0.5rem;
         }
 
-        #ulWatchlist li #buttonRemove {
+        #ulWatchlist li #buttonRemove,
+        #notificationListItem li #buttonPreview {
             margin: 0 0.2rem;
         }
 
@@ -82,6 +85,10 @@
 
         #dinamicContent+* {
             display: flex;
+        }
+
+        #detailViewContent img {
+            width: 100% !important;
         }
 
         .flex {
@@ -351,8 +358,11 @@
 
     <ul id="ulNotificationlist"></ul>
 
+    <div id="detailViewContent" class="hidden"></div>
+
     <template id="notificationListItem">
         <li>
+            <div id="buttonPreview" data-detail-id="">Details</div>
             <span id="timestamp" title="Timestamp">Timestamp</span>
             <span id="message">Message</span>
         </li>
@@ -365,7 +375,7 @@
     <template id="ticketListItem">
         <li>
             <div class="container">
-                <div id="buttonRemove" title="Remove">X</div>
+                <div id="buttonRemove" title="Remove" data-ticket-id="">X</div>
                 <div id="ticketStatus" title="">Status</div>
                 <div id="ticketId"></div>
                 <div id="ticketPriority" title="">Priority</div>
