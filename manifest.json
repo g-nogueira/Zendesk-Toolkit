@@ -5,11 +5,11 @@
 	"version": "0.0.1",
 	"background": {
 		"scripts": [
-			"dependencies/string.js",
+			"extensions/string.js",
 			"core/constants.js",
-			"dependencies/chromeAsync.js",
+			"integrations/chrome.js",
 			"core/notificationHelper.js",
-			"dependencies/zendesk.js",
+			"integrations/zendesk.js",
 			"core/ticketHelper.js",
 			"background/shared.js",
 			"background/onInstalled.js",
@@ -22,9 +22,9 @@
 	},
 	"browser_action": {
 		"default_title": "Zendesk Tookit",
-		"default_popup": "browserAction/browserAction.html"
+		"default_popup": "views/browserAction/browserAction.html"
 	},
-	"options_page": "optionsPage/optionsPage.html",
+	"options_page": "views/options/options.html",
 	"content_scripts": [
 		{
 			"matches": [
@@ -32,7 +32,7 @@
 			],
 			"js": [
 				"core/constants.js",
-				"dependencies/chromeAsync.js",
+				"integrations/chrome.js",
 				"contentScript.js"
 			]
 		}
