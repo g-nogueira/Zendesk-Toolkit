@@ -7,7 +7,7 @@
 		"scripts": [
 			"extensions/string.js",
 			"core/constants.js",
-			"integrations/chrome.js",
+			"extensions/chromeAsync.js",
 			"core/notificationHelper.js",
 			"integrations/zendesk.js",
 			"core/ticketHelper.js",
@@ -32,7 +32,7 @@
 			],
 			"js": [
 				"core/constants.js",
-				"integrations/chrome.js",
+				"extensions/chromeAsync.js",
 				"contentScript.js"
 			]
 		}
