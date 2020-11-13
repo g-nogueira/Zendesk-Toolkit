@@ -145,7 +145,7 @@
     }
 
     async function reloadWatchList() {
-        var DBWatchList = await ticketHelper.getAllFromWatchList();
+        var DBWatchList = await ticketHelper.getAllTickets("local");
 
         // Retrieves <templates> elements
         var ticketListItem = document.querySelector('#ticketListItem');
@@ -154,13 +154,13 @@
         // Cleans the <ul> children
         HTMLElements.lists.watchList.innerHTML = "";
 
-        if (DBWatchList.length === 0) {
+        if (DBWatchList.local.length === 0) {
             // Inserts "Empty List" in <ul>
             let node = ticketEmptyList.content.cloneNode(true);
             HTMLElements.lists.watchList.appendChild(node);
 
         } else {
-            DBWatchList.forEach((ticket) => {
+            DBWatchList.local.forEach((ticket) => {
                 // Sets up the <li> elements and its properties
                 let node = ticketListItem.content.cloneNode(true);
 

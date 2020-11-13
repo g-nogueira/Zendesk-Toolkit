@@ -28,10 +28,15 @@ async function addTicketToWatchList(info, tab) {
     });
 }
 
-async function updateBigWatchList() {
-    var bigWatchList = await ticketHelper.getAllFromWatchList();
+/**
+ * Synchronizes the local and sync tickets with the server.
+ *
+ * @returns
+ */
+async function syncTickets() {
+    var bigWatchList = await ticketHelper.getAllTickets("local");
 
-    bigWatchList = bigWatchList.map(async (ticket) => {
+    bigWatchList.local = bigWatchList.local.map(async (ticket) => {
 
         var updatedTicket = await ticketHelper.getTicket(ticket.id);
 
@@ -93,33 +98,9 @@ async function updateBigWatchList() {
 
     return new Promise((resolve, reject) => {
 
-        Promise.all(bigWatchList).then((result) => {
+        Promise.all(bigWatchList.local).then((result) => {
             chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: result }).then(resolve);
         });
-    });
-}
-
-async function updateSmallWatchList() {
-    var smallWatchList = await ticketHelper.getAllFromWatchList(true);
-    var bigWatchList = await ticketHelper.getAllFromWatchList();
-
-    var smallWatchList = smallWatchList.map((smallTicket) => {
-
-        let bigTicket = bigWatchList.find((bigTicket) => bigTicket.id === smallTicket.id);
-
-        if (!bigTicket) {
-            return smallTicket;
-        }
-
-        smallTicket.priority = bigTicket.zendeskTicket.priority;
-        smallTicket.zendeskTicket = null;
-
-        return smallTicket;
-    });
-
-    return new Promise((resolve, reject) => {
-
-        chromeAsync.storage.sync.set({ [STORAGE_KEYS.WATCHING_TICKETS]: smallWatchList }).then(resolve);
     });
 }
 

@@ -44,16 +44,43 @@ const ticketHelper = {
         return watchList[STORAGE_KEYS.WATCHING_TICKETS].some((ticket) => ticketId == ticket.id);
     },
 
-    async getAllFromWatchList(smallWatchList = false) {
-        var watchList = [];
-        if (smallWatchList) {
-            watchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
-        } else {
-            watchList = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
+    /**
+     * Returns all tickets from the extension's storage.
+     *
+     * @param {"sync"|"local"} [storageType=null]
+     * @returns
+     */
+    async getAllTickets(storageType = null) {
+        var watchList = {};
+
+        if (storageType === null) {
+
+            watchList.local = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
+            watchList.sync = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
+            watchList.local = watchList.local[STORAGE_KEYS.WATCHING_TICKETS]
+            watchList.sync = watchList.sync[STORAGE_KEYS.WATCHING_TICKETS]
+
+        } else if (storageType === "sync") {
+
+            watchList.sync = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
+            watchList.sync = watchList.sync[STORAGE_KEYS.WATCHING_TICKETS]
+
+        } else if (storageType === "local") {
+
+            watchList.local = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
+            watchList.local = watchList.local[STORAGE_KEYS.WATCHING_TICKETS]
+
         }
-        return watchList[STORAGE_KEYS.WATCHING_TICKETS];
+
+        return watchList;
     },
 
+    /**
+     * Retrieves a ticket from Zendesk API, managing it according the extension's architecture.
+     *
+     * @param {number|string} id
+     * @returns
+     */
     async getTicket(id) {
         var response = {
             sync: {},

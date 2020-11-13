@@ -41,3 +41,5 @@ const MESSAGE_TEMPLATES = {
     // #2403175 - WATCHING - 'High RDS CPU usage'
     WATCHING_TICKET: "#{0} - WATCHING - '{1}'"
 };
+
+const ZENDESK_MY_USERID = "371645624698";
