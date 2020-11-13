@@ -11,16 +11,16 @@ function createAlarm(name, when, periodInMinutes) {
 async function addTicketToWatchList(info, tab) {
     var ticketId = /[tickets]\/([0-9]+)/.exec(tab.url)[1];
     var ticketURL = ticketHelper.getAgentUrl(ticketId);
+    var zendeskTicket = (await zendesk.api.tickets(ticketId)).ticket;
 
     if (!(await ticketHelper.isOnWatchList(ticketId))) {
-        var bigTicket = (await zendesk.api.tickets(ticketId)).ticket;
-        ticketHelper.addToWatchList(ticketId, bigTicket.subject, ticketURL, bigTicket);
+        ticketHelper.addToWatchList(ticketId, zendeskTicket.subject, ticketURL, zendeskTicket);
     }
 
     let title = String.format(
         MESSAGE_TEMPLATES.WATCHING_TICKET,
         ticketId,
-        bigTicket.subject
+        zendeskTicket.subject
     );
     notificationHelper.addToNotifications({
         message: title,
@@ -33,28 +33,25 @@ async function updateBigWatchList() {
 
     bigWatchList = bigWatchList.map(async (ticket) => {
 
-        let bigTicket = await zendesk.api.tickets(ticket.id);
-        let ticketComments = await zendesk.api.ticketsComments(ticket.id);
+        var updatedTicket = await ticketHelper.getTicket(ticket.id);
 
-        if (!bigTicket) {
+        if (updatedTicket === null) {
             return ticket;
         }
 
-        bigTicket = bigTicket.ticket;
-        let oldStatus = ticket.ticket.status || "";
-        let newStatus = bigTicket.status;
+        let oldStatus = ticket.zendeskTicket.status;
+        let newStatus = updatedTicket.local.zendeskTicket.status;
 
         // Get the most recent and public comment
-        let newComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
-        let oldCommentOn = +ticket.lastCommentOn || null;
-        let newCommentOn = newComment ? (new Date(newComment.created_at)).getTime() : null;
+        let oldCommentOn = +ticket.lastPublicComment || null;
+        let newCommentOn = +updatedTicket.local.lastPublicComment;
 
-        if (bigTicket && oldStatus !== newStatus) {
+        if (oldStatus !== newStatus) {
 
             var title = String.format(
                 MESSAGE_TEMPLATES.TICKET_STATUS_CHANGED,
                 ticket.id,
-                ticket.title,
+                ticket.subject,
                 oldStatus.toUpperCase(),
                 newStatus.toUpperCase()
             );
@@ -67,12 +64,16 @@ async function updateBigWatchList() {
             });
         }
 
-        if (newComment && oldCommentOn !== newCommentOn) {
+        if (oldCommentOn !== newCommentOn) {
+
+            let ticketComments = await zendesk.api.ticketsComments(ticket.id);
+            let newComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
 
             var title = String.format(
                 MESSAGE_TEMPLATES.TICKET_NEW_COMMENT,
                 ticket.id,
-                ticket.title
+                ticket.subject
             );
 
             notificationHelper.addSystemTrayNotification("Ticket New Comment", title);
@@ -85,8 +86,7 @@ async function updateBigWatchList() {
         }
 
 
-        ticket.ticket = bigTicket || ticket.ticket;
-        ticket.lastCommentOn = newCommentOn || ticket.lastCommentOn;
+        ticket = updatedTicket.local;
 
         return ticket;
     });
@@ -111,8 +111,8 @@ async function updateSmallWatchList() {
             return smallTicket;
         }
 
-        smallTicket.priority = bigTicket.ticket.priority;
-        smallTicket.ticket = null;
+        smallTicket.priority = bigTicket.zendeskTicket.priority;
+        smallTicket.zendeskTicket = null;
 
         return smallTicket;
     });

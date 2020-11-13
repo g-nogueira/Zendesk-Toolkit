@@ -167,11 +167,11 @@
                 node.querySelector("#ticketId").innerHTML = "#" + ticket.id;
                 node.querySelector("#buttonRemove").dataset.ticketId = ticket.id;
                 node.querySelector("#ticketTitle").href = ticket.url;
-                node.querySelector("#ticketPriority").innerText = ticket.ticket.priority;
-                node.querySelector("#ticketStatus").innerText = ticket.ticket.status;
-                node.querySelector("#ticketStatus").classList.add("ticket-status-" + ticket.ticket.status);
-                node.querySelector("#ticketTitle").innerHTML = ticket.title;
-                node.querySelector("#ticketTitle").title = ticket.title;
+                node.querySelector("#ticketPriority").innerText = ticket.zendeskTicket.priority;
+                node.querySelector("#ticketStatus").innerText = ticket.zendeskTicket.status;
+                node.querySelector("#ticketStatus").classList.add("ticket-status-" + ticket.zendeskTicket.status);
+                node.querySelector("#ticketTitle").innerHTML = ticket.subject;
+                node.querySelector("#ticketTitle").title = ticket.subject;
                 node.querySelector("#ticketTitle").addEventListener("click", requestOpenTicket);
                 node.querySelector("#buttonRemove").addEventListener("click", removeTicketFromWatchList);
 

@@ -4,14 +4,14 @@ const ticketHelper = {
         return "https://supportoutsystems.zendesk.com/agent/tickets/" + ticketId
     },
 
-    async addToWatchList(ticketId, title, url, zendeskTicket = null) {
+    async addToWatchList(ticketId, subject, url, zendeskTicket = null) {
         var tinyWatchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
         var bigWatchList = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
         tinyWatchList = tinyWatchList[STORAGE_KEYS.WATCHING_TICKETS];
         bigWatchList = bigWatchList[STORAGE_KEYS.WATCHING_TICKETS];
 
-        var tinyTicket = { id: ticketId, title, url };
-        var bigTicket = { id: ticketId, title, url, ticket: zendeskTicket };
+        var tinyTicket = { id: ticketId, subject, url };
+        var bigTicket = { id: ticketId, subject, url, zendeskTicket };
 
 
         tinyWatchList.push(tinyTicket);
@@ -53,5 +53,49 @@ const ticketHelper = {
         }
         return watchList[STORAGE_KEYS.WATCHING_TICKETS];
     },
+
+    async getTicket(id) {
+        var response = {
+            sync: {},
+            local: {}
+        };
+
+        let zendeskTicket = await zendesk.api.tickets(id);
+        let ticketComments = await zendesk.api.ticketsComments(id);
+
+        if (!zendeskTicket) {
+            return null;
+        }
+
+        zendeskTicket = zendeskTicket.ticket;
+
+        // Most recent public and private comments
+        let lastPublicComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        let lastPrivateComment = ticketComments.comments.filter((comment) => !comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+        // Date of the comment in milliseconds
+        let lastPublicCommentTimestamp = (new Date(lastPublicComment.created_at)).getTime();
+
+        response.local = {
+            id: zendeskTicket.id,
+            subject: zendeskTicket.subject,
+            url: zendeskTicket.url,
+            lastPublicComment: lastPublicCommentTimestamp,
+            zendeskTicket: zendeskTicket
+        };
+
+        response.sync = {
+            id: zendeskTicket.id,
+            subject: zendeskTicket.subject,
+            url: zendeskTicket.url
+        };
+
+        // Track if ticket is assigned to user using extension
+        if (zendeskTicket && zendeskTicket.assignee_id === +ZENDESK_MY_USERID) {
+            response.local.isMine = true;
+        }
+
+        return response;
+    }
 
 }
