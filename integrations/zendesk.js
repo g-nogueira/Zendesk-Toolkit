@@ -99,8 +99,8 @@ const _fetch = async (url) => {
         return resolvedPromise;
     }
     else {
-        var message = "Zendesk API fetch failed with status " + resolvedPromise.status + " " + resolvedPromise.statusText;
-        notificationHelper.addToNotifications({ message });
+        // var message = "Zendesk API fetch failed with status " + resolvedPromise.status + " " + resolvedPromise.statusText;
+        // notificationHelper.addToNotifications({ message });
 
         return false;
     }

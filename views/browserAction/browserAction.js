@@ -42,11 +42,11 @@
 
     HTMLElements.buttons.showQRCode.addEventListener("click", () =>
         // Toggles QRCode tab
-        toggleContent(HTMLElements.containers.QRCodeContent)
+        changeTab(HTMLElements.containers.QRCodeContent)
     );
     HTMLElements.buttons.showCountryCodes.addEventListener("click", () => {
         // Toggles countryCodes tab
-        toggleContent(HTMLElements.containers.countryCodesContent);
+        changeTab(HTMLElements.containers.countryCodesContent);
         HTMLElements.inputs.countryCodes.focus();
     });
     HTMLElements.buttons.reloadWatchList.addEventListener("click", () =>
@@ -63,12 +63,24 @@
         qr.value = e.target.value;
     }
 
-    function toggleContent(el) {
+    function changeTab(el) {
         if (el.classList.contains("hidden")) {
             HTMLElements.containers.tabsContents.querySelectorAll(":scope > *").forEach((el) => el.classList.add("hidden"));
             el.classList.remove("hidden");
         } else {
             el.classList.add("hidden");
+        }
+    }
+
+    function toggleContent(el, forceState = null) {
+        if (forceState === null) {
+            el.classList.toggle("hidden");
+        } else {
+            if (forceState) {
+                el.classList.remove("hidden");
+            } else {
+                el.classList.add("hidden");
+            }
         }
     }
 
@@ -108,7 +120,7 @@
 
                 node.querySelector("#buttonPreview").addEventListener("click", (e) => {
                     if (notification.ticketId && notification.detailId) {
-                        toggleContent(HTMLElements.containers.detailViewer);
+                        toggleContent(HTMLElements.containers.detailViewer, true);
                         insertTicketComment(notification.ticketId, notification.detailId);
                     }
                 });
