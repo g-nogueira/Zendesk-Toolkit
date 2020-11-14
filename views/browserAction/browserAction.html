@@ -53,8 +53,8 @@
             overflow: hidden;
         }
 
-        #ulWatchlist li .container {
-            display: inline-flex;
+        #ulWatchlist li div {
+            display: inline-block;
         }
 
         #ulNotificationlist li #timestamp {
@@ -374,13 +374,11 @@
 
     <template id="ticketListItem">
         <li>
-            <div class="container">
-                <div id="buttonRemove" title="Remove" data-ticket-id="">X</div>
-                <div id="ticketStatus" title="">Status</div>
-                <div id="ticketId"></div>
-                <div id="ticketPriority" title="">Priority</div>
-                <a href="" id="ticketTitle"></a>
-            </div>
+            <div id="buttonRemove" title="Remove" data-ticket-id="">X</div>
+            <div id="ticketStatus" title="">Status</div>
+            <div id="ticketId"></div>
+            <div id="ticketPriority" title="">Priority</div>
+            <a href="" id="ticketTitle"></a>
         </li>
     </template>
 
