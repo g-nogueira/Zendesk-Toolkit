@@ -12,26 +12,31 @@ async function addTicketToWatchList(info, tab) {
     var ticketId = /[tickets]\/([0-9]+)/.exec(tab.url)[1];
     var ticketURL = ticketHelper.getAgentUrl(ticketId);
 
+    // Only proceeds if the ticket is not already in the watchList
     if (!(await ticketHelper.isOnWatchList(ticketId))) {
-        let ticket = await ticketHelper.addToWatchList(ticketId, zendeskTicket.subject, ticketURL, zendeskTicket);
+        let ticket = await ticketHelper.addToWatchList(ticketId);
 
+        // Builds and displays a notification
         let title = String.format(
             MESSAGE_TEMPLATES.WATCHING_TICKET,
             ticketId,
             ticket.local.zendeskTicket.subject
         );
-        notificationHelper.addToNotifications({
+
+        notificationHelper.notify({
             message: title,
-            url: ticketURL
+            url: ticket.local.url
         });
 
     } else {
 
+        // Builds and displays a notification
         let title = String.format(
             MESSAGE_TEMPLATES.ALREADY_WATCHING_TICKET,
             ticketId,
         );
-        notificationHelper.addToNotifications({
+
+        notificationHelper.notify({
             message: title,
             url: ticketURL
         });
@@ -73,7 +78,7 @@ async function syncTickets() {
             );
 
             notificationHelper.addSystemTrayNotification("Ticket Status Changed", title);
-            await notificationHelper.addToNotifications({
+            await notificationHelper.notify({
                 message: title,
                 url: ticket.url,
                 ticketId: ticket.id
@@ -94,7 +99,7 @@ async function syncTickets() {
             );
 
             notificationHelper.addSystemTrayNotification("Ticket New Comment", title);
-            await notificationHelper.addToNotifications({
+            await notificationHelper.notify({
                 message: title,
                 url: ticket.url,
                 ticketId: ticket.id,

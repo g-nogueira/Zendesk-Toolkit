@@ -47,7 +47,7 @@
             window.location.reload();
         } catch (error) {
             e.target.value = "Error: " + error.message;
-            notificationHelper.addToNotifications({ message: error.message });
+            notificationHelper.notify({ message: error.message });
 
             setTimeout(() => {
                 window.location.reload();

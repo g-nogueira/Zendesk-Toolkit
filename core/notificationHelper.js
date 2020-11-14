@@ -6,7 +6,7 @@ const notificationHelper = {
      * @param {string} object.message
      * @param {string} object.url
      */
-    async addToNotifications(object, increaseBadgeCount = true) {
+    async notify(object, increaseBadgeCount = true) {
         return new Promise(async (resolve, reject) => {
 
             var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);

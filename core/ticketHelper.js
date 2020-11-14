@@ -102,16 +102,14 @@ const ticketHelper = {
         response.local = {
             id: zendeskTicket.id,
             subject: zendeskTicket.subject,
-            url: zendeskTicket.url,
+            url: this.getAgentUrl(zendeskTicket.id),
             lastPublicComment: lastPublicCommentTimestamp,
             zendeskTicket: zendeskTicket
         };
 
         // Sets the sync ticket
         response.sync = {
-            id: zendeskTicket.id,
-            subject: zendeskTicket.subject,
-            url: zendeskTicket.url
+            id: zendeskTicket.id
         };
 
         // Track if ticket is assigned to user using extension
