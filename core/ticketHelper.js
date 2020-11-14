@@ -105,7 +105,7 @@ const ticketHelper = {
             url: this.getAgentUrl(id),
             lastPublicComment: lastPublicCommentTimestamp,
             zendeskTicket: zendeskTicket,
-            isMine = +zendeskTicket.assignee_id === +ZENDESK_MY_USERID
+            isMine: +zendeskTicket.assignee_id === +ZENDESK_MY_USERID
         };
 
         // Sets the sync ticket
