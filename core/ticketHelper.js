@@ -4,44 +4,39 @@ const ticketHelper = {
         return "https://supportoutsystems.zendesk.com/agent/tickets/" + ticketId
     },
 
-    async addToWatchList(ticketId, subject, url, zendeskTicket = null) {
-        var tinyWatchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
-        var bigWatchList = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
-        tinyWatchList = tinyWatchList[STORAGE_KEYS.WATCHING_TICKETS];
-        bigWatchList = bigWatchList[STORAGE_KEYS.WATCHING_TICKETS];
+    async addToWatchList(ticketId) {
+        var tickets = await this.getAllTickets();
+        var ticket = await this.getTicket(ticketId);
 
-        var tinyTicket = { id: ticketId, subject, url };
-        var bigTicket = { id: ticketId, subject, url, zendeskTicket };
+        tickets.local.push(ticket.local);
+        tickets.sync.push(ticket.sync);
 
+        chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tickets.local });
+        chromeAsync.storage.sync.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tickets.sync });
 
-        tinyWatchList.push(tinyTicket);
-        bigWatchList.push(bigTicket);
-
-
-        chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: bigWatchList });
-        return chromeAsync.storage.sync.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tinyWatchList });
+        return ticket;
     },
 
     async removeFromWatchList(ticketId = -1) {
-        var tinyWatchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
-        var bigWatchList = await chromeAsync.storage.local.get(STORAGE_KEYS.WATCHING_TICKETS);
+        var tickets = await this.getAllTickets();
 
-        tinyWatchList = tinyWatchList[STORAGE_KEYS.WATCHING_TICKETS].filter((ticket) => {
-            return ticket.id !== ticketId;
-        });
+        // Returns only the tickets that are different from the one inputed
+        tickets.sync = tickets.sync.filter((ticket) => +ticket.id !== +ticketId);
+        tickets.local = tickets.local.filter((ticket) => +ticket.id !== +ticketId);
 
-        bigWatchList = bigWatchList[STORAGE_KEYS.WATCHING_TICKETS].filter((ticket) => {
-            return ticket.id !== ticketId;
-        });
+        var promises = [
+            chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tickets.local }),
+            chromeAsync.storage.sync.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tickets.sync })
+        ]
 
-        chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: bigWatchList });
-        return chromeAsync.storage.sync.set({ [STORAGE_KEYS.WATCHING_TICKETS]: tinyWatchList });
+        return Promise.all(promises);
     },
 
     async isOnWatchList(ticketId = -1) {
         var watchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
+        watchList = watchList[STORAGE_KEYS.WATCHING_TICKETS];
 
-        return watchList[STORAGE_KEYS.WATCHING_TICKETS].some((ticket) => ticketId == ticket.id);
+        return watchList.some((ticket) => +ticketId === +ticket.id);
     },
 
     /**
@@ -98,11 +93,12 @@ const ticketHelper = {
 
         // Most recent public and private comments
         let lastPublicComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
-        let lastPrivateComment = ticketComments.comments.filter((comment) => !comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        // let lastPrivateComment = ticketComments.comments.filter((comment) => !comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
 
         // Date of the comment in milliseconds
         let lastPublicCommentTimestamp = (new Date(lastPublicComment.created_at)).getTime();
 
+        // Sets the local ticket
         response.local = {
             id: zendeskTicket.id,
             subject: zendeskTicket.subject,
@@ -111,6 +107,7 @@ const ticketHelper = {
             zendeskTicket: zendeskTicket
         };
 
+        // Sets the sync ticket
         response.sync = {
             id: zendeskTicket.id,
             subject: zendeskTicket.subject,

@@ -39,7 +39,11 @@ const MESSAGE_TEMPLATES = {
 
     // {0} TicketId, {1} Ticket title
     // #2403175 - WATCHING - 'High RDS CPU usage'
-    WATCHING_TICKET: "#{0} - WATCHING - '{1}'"
+    WATCHING_TICKET: "#{0} - WATCHING - '{1}'",
+
+    // {0} TicketId, {1} Ticket title
+    // #2403175 - ALREADY WATCHING - The ticket was already on the watch list.
+    ALREADY_WATCHING_TICKET: "#{0} - ALREADY WATCHING - The ticket was already on the watch list."
 };
 
 const ZENDESK_MY_USERID = "371645624698";

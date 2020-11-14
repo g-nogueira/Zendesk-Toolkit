@@ -11,21 +11,32 @@ function createAlarm(name, when, periodInMinutes) {
 async function addTicketToWatchList(info, tab) {
     var ticketId = /[tickets]\/([0-9]+)/.exec(tab.url)[1];
     var ticketURL = ticketHelper.getAgentUrl(ticketId);
-    var zendeskTicket = (await zendesk.api.tickets(ticketId)).ticket;
 
     if (!(await ticketHelper.isOnWatchList(ticketId))) {
-        ticketHelper.addToWatchList(ticketId, zendeskTicket.subject, ticketURL, zendeskTicket);
+        let ticket = await ticketHelper.addToWatchList(ticketId, zendeskTicket.subject, ticketURL, zendeskTicket);
+
+        let title = String.format(
+            MESSAGE_TEMPLATES.WATCHING_TICKET,
+            ticketId,
+            ticket.local.zendeskTicket.subject
+        );
+        notificationHelper.addToNotifications({
+            message: title,
+            url: ticketURL
+        });
+
+    } else {
+
+        let title = String.format(
+            MESSAGE_TEMPLATES.ALREADY_WATCHING_TICKET,
+            ticketId,
+        );
+        notificationHelper.addToNotifications({
+            message: title,
+            url: ticketURL
+        });
     }
 
-    let title = String.format(
-        MESSAGE_TEMPLATES.WATCHING_TICKET,
-        ticketId,
-        zendeskTicket.subject
-    );
-    notificationHelper.addToNotifications({
-        message: title,
-        url: ticketURL
-    });
 }
 
 /**
@@ -69,7 +80,8 @@ async function syncTickets() {
             });
         }
 
-        if (oldCommentOn !== newCommentOn) {
+        // Notifies only new comments
+        if (oldCommentOn !== null && oldCommentOn !== newCommentOn) {
 
             let ticketComments = await zendesk.api.ticketsComments(ticket.id);
             let newComment = ticketComments.comments.filter((comment) => comment.public).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
