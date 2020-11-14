@@ -6,14 +6,14 @@
     //     "Column: " + colno,
     //     "Error: " + JSON.stringify(error)].join("\n");
 
-    //     notificationHelper.notify({ message: fullMessage });
+    //     notificationHelper.log({ message: fullMessage });
     // });
 
     // chrome.tabs.executeScript(null, null, function () {
     //     if (chrome.runtime.lastError) {
     //         var errorMsg = chrome.runtime.lastError.message;
 
-    //         notificationHelper.notify({ message: errorMsg });
+    //         notificationHelper.log({ message: errorMsg });
     //         if (errorMsg == "Cannot access a chrome:// URL") {
     //             // Error handling here
     //         }

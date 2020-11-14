@@ -23,7 +23,7 @@ async function addTicketToWatchList(info, tab) {
             ticket.local.zendeskTicket.subject
         );
 
-        notificationHelper.notify({
+        notificationHelper.log({
             message: title,
             url: ticket.local.url
         });
@@ -36,7 +36,7 @@ async function addTicketToWatchList(info, tab) {
             ticketId,
         );
 
-        notificationHelper.notify({
+        notificationHelper.log({
             message: title,
             url: ticketURL
         });
@@ -45,14 +45,14 @@ async function addTicketToWatchList(info, tab) {
 }
 
 /**
- * Synchronizes the local and sync tickets with the server.
+ * Synchronizes local data with Zendesk server.
  *
  * @returns
  */
 async function syncTickets() {
-    var bigWatchList = await ticketHelper.getAllTickets("local");
+    var tikets = await ticketHelper.getAllTickets("local");
 
-    bigWatchList.local = bigWatchList.local.map(async (ticket) => {
+    tikets.local = tikets.local.map(async (ticket) => {
 
         var updatedTicket = await ticketHelper.getTicket(ticket.id);
 
@@ -60,6 +60,7 @@ async function syncTickets() {
             return ticket;
         }
 
+        // Track a change in status
         let oldStatus = ticket.zendeskTicket.status;
         let newStatus = updatedTicket.local.zendeskTicket.status;
 
@@ -69,6 +70,7 @@ async function syncTickets() {
 
         if (oldStatus !== newStatus) {
 
+            // Builds and displays a notification for status changed
             var title = String.format(
                 MESSAGE_TEMPLATES.TICKET_STATUS_CHANGED,
                 ticket.id,
@@ -77,8 +79,8 @@ async function syncTickets() {
                 newStatus.toUpperCase()
             );
 
-            notificationHelper.addSystemTrayNotification("Ticket Status Changed", title);
-            await notificationHelper.notify({
+            notificationHelper.notify("Ticket Status Changed", title);
+            await notificationHelper.log({
                 message: title,
                 url: ticket.url,
                 ticketId: ticket.id
@@ -98,15 +100,14 @@ async function syncTickets() {
                 ticket.subject
             );
 
-            notificationHelper.addSystemTrayNotification("Ticket New Comment", title);
-            await notificationHelper.notify({
+            notificationHelper.notify("Ticket New Comment", title);
+            await notificationHelper.log({
                 message: title,
                 url: ticket.url,
                 ticketId: ticket.id,
                 detailId: newComment.id
             });
         }
-
 
         ticket = updatedTicket.local;
 
@@ -115,7 +116,7 @@ async function syncTickets() {
 
     return new Promise((resolve, reject) => {
 
-        Promise.all(bigWatchList.local).then((result) => {
+        Promise.all(tikets.local).then((result) => {
             chromeAsync.storage.local.set({ [STORAGE_KEYS.WATCHING_TICKETS]: result }).then(resolve);
         });
     });

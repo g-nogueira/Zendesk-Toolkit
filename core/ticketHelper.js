@@ -33,10 +33,9 @@ const ticketHelper = {
     },
 
     async isOnWatchList(ticketId = -1) {
-        var watchList = await chromeAsync.storage.sync.get(STORAGE_KEYS.WATCHING_TICKETS);
-        watchList = watchList[STORAGE_KEYS.WATCHING_TICKETS];
+        var tickets = await this.getAllTickets("sync");
 
-        return watchList.some((ticket) => +ticketId === +ticket.id);
+        return tickets.sync.some((ticket) => +ticketId === +ticket.id);
     },
 
     /**
@@ -77,13 +76,14 @@ const ticketHelper = {
      * @returns
      */
     async getTicket(id) {
-        var response = {
-            sync: {},
-            local: {}
-        };
 
-        let zendeskTicket = await zendesk.api.tickets(id);
-        let ticketComments = await zendesk.api.ticketsComments(id);
+        if (Number.isInteger(+id)) {
+            id = +id;
+        }
+
+        var response = { sync: {}, local: {} };
+        var zendeskTicket = await zendesk.api.tickets(id);
+        var ticketComments = await zendesk.api.ticketsComments(id);
 
         if (!zendeskTicket) {
             return null;
@@ -100,22 +100,16 @@ const ticketHelper = {
 
         // Sets the local ticket
         response.local = {
-            id: zendeskTicket.id,
+            id,
             subject: zendeskTicket.subject,
-            url: this.getAgentUrl(zendeskTicket.id),
+            url: this.getAgentUrl(id),
             lastPublicComment: lastPublicCommentTimestamp,
-            zendeskTicket: zendeskTicket
+            zendeskTicket: zendeskTicket,
+            isMine = +zendeskTicket.assignee_id === +ZENDESK_MY_USERID
         };
 
         // Sets the sync ticket
-        response.sync = {
-            id: zendeskTicket.id
-        };
-
-        // Track if ticket is assigned to user using extension
-        if (zendeskTicket && zendeskTicket.assignee_id === +ZENDESK_MY_USERID) {
-            response.local.isMine = true;
-        }
+        response.sync = { id };
 
         return response;
     }

@@ -10,10 +10,12 @@
     var button_backupStorage = document.getElementById("backupStorage");
     var button_restoreStorage = document.getElementById("restoreStorage");
 
+    // Register event listeners
     form_options.addEventListener("change", saveChanges);
     button_backupStorage.addEventListener("click", backupStorage);
     button_restoreStorage.addEventListener("click", restoreStorage);
 
+    // Initialize some elements' values
     input_filepath.value = (await chromeAsync.storage.sync.get(STORAGE_KEYS.FILEPATH))[STORAGE_KEYS.FILEPATH];
     input_url.value = (await chromeAsync.storage.sync.get(STORAGE_KEYS.URL))[STORAGE_KEYS.URL];
     input_fileextensions.value = (await chromeAsync.storage.sync.get(STORAGE_KEYS.FILE_EXTENSIONS))[STORAGE_KEYS.FILE_EXTENSIONS];
@@ -47,7 +49,7 @@
             window.location.reload();
         } catch (error) {
             e.target.value = "Error: " + error.message;
-            notificationHelper.notify({ message: error.message });
+            notificationHelper.log({ message: error.message });
 
             setTimeout(() => {
                 window.location.reload();

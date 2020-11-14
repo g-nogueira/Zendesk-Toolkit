@@ -6,7 +6,7 @@ const notificationHelper = {
      * @param {string} object.message
      * @param {string} object.url
      */
-    async notify(object, increaseBadgeCount = true) {
+    async log(object, increaseBadgeCount = true) {
         return new Promise(async (resolve, reject) => {
 
             var notifications = await chromeAsync.storage.sync.get(STORAGE_KEYS.NOTIFICATIONS);
@@ -41,7 +41,7 @@ const notificationHelper = {
         });
     },
 
-    addSystemTrayNotification(title, message) {
+    notify(title, message) {
         chrome.notifications.create("", { type: "basic", iconUrl: "./icon_test.png", title, message });
     },
 
