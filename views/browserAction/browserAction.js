@@ -1,6 +1,7 @@
 "use strict";
 
 (async () => {
+    var tabs = new Tabby('[data-tabs]');
 
     // As soon as the browseraction opens, Clear badge notifications
     chrome.browserAction.setBadgeText({ text: "" });
@@ -18,15 +19,10 @@
             countryCodes: document.getElementById("countryCodes")
         },
         buttons: {
-            showQRCode: document.getElementById("showQr"),
-            showCountryCodes: document.getElementById("showCountryCodes"),
             reloadWatchList: document.getElementById("buttonReload"),
             clearNotifications: document.getElementById("buttonClear")
         },
         containers: {
-            tabsContents: document.getElementById("tabsContents"),
-            QRCodeContent: document.getElementById("qrContent"),
-            countryCodesContent: document.getElementById("countryCodesContent"),
             detailViewer: document.getElementById("detailViewContent"),
         },
         lists: {
@@ -39,16 +35,6 @@
     reloadWatchList();
     reloadNotificationList();
 
-
-    HTMLElements.buttons.showQRCode.addEventListener("click", () =>
-        // Toggles QRCode tab
-        changeTab(HTMLElements.containers.QRCodeContent)
-    );
-    HTMLElements.buttons.showCountryCodes.addEventListener("click", () => {
-        // Toggles countryCodes tab
-        changeTab(HTMLElements.containers.countryCodesContent);
-        HTMLElements.inputs.countryCodes.focus();
-    });
     HTMLElements.buttons.reloadWatchList.addEventListener("click", () =>
         // Sends message to listener to update tickets
         chromeAsync.runtime.sendMessage({ action: MESSAGE_ACTIONS.UPDATE_ALL_TICKETS }).then(reloadWatchList)
@@ -61,15 +47,6 @@
 
     function generateQrCode(e) {
         qr.value = e.target.value;
-    }
-
-    function changeTab(el) {
-        if (el.classList.contains("hidden")) {
-            HTMLElements.containers.tabsContents.querySelectorAll(":scope > *").forEach((el) => el.classList.add("hidden"));
-            el.classList.remove("hidden");
-        } else {
-            el.classList.add("hidden");
-        }
     }
 
     function toggleContent(el, forceState = null) {

@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="/vendors/tabby/css/tabby-ui.min.css">
 </head>
 
 <body>
@@ -100,17 +102,19 @@
         }
     </style>
 
-    <div>
-        <a id="showQr" href="#">QR Code</a>
-        <a id="showCountryCodes" href="#">Country Codes</a>
-    </div>
+    <ul data-tabs>
+        <li><a data-tabby-default href="#qrContent">QR Code</a></li>
+        <li><a href="#countryCodesContent">Country Codes</a></li>
+    </ul>
 
-    <div id="tabsContents">
-        <div id="qrContent" class="flex hidden" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
+    <div id="qrContent">
+        <div class="flex" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
             <canvas id="qr"></canvas>
             <input type="text" style="width:100%" id="qrUrl" placeholder="Enter your URL here...">
         </div>
-        <div id="countryCodesContent" class="flex hidden" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
+    </div>
+    <div id="countryCodesContent">
+        <div class="flex" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
             <input list="countryCodes" placeholder="Type the country code here..." style="width:40%">
             <datalist id="countryCodes">
                 <option>+93 - Afghanistan</option>
@@ -344,11 +348,19 @@
         </div>
     </div>
 
+    <ul data-tabs>
+        <li><a data-tabby-default href="#watchList">Watch List</a></li>
+        <li><a href="#reminders">Reminders</a></li>
+    </ul>
+
+    <div id="watchList">
     <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
-        <h3>Watch List</h3>
+            <!-- <h3>Watch List</h3> -->
         <a href="#" id="buttonReload">Reload</a>
     </div>
+
     <ul id="ulWatchlist"></ul>
+    </div>
 
     <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
         <h3>Notifications</h3>
@@ -386,6 +398,7 @@
         <li>The list is empty...</li>
     </template>
 
+    <script src="/vendors/tabby/js/tabby.min.js"></script>
     <script src="/extensions/chromeAsync.js"></script>
     <script src="/extensions/QRious.js"></script>
     <script src="/core/constants.js"></script>
