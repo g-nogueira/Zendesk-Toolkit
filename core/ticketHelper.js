@@ -112,6 +112,78 @@ const ticketHelper = {
         response.sync = { id };
 
         return response;
+    },
+    
+    /**
+     *  Createc os Updates a TicketReminder.
+     *
+     * @param {object} TicketReminder
+     * @param {number|string} id
+     * @param {number|string} ticketId
+     * @param {string} description
+     * @param {number|string} when
+     * @param {number|string} completedOn
+     * @returns ReminderId
+     */
+    async createOrUpdateReminder({id = null, ticketId, description, when, completedOn}) {
+        var reminders = await chromeAsync.storage.sync.get(STORAGE_KEYS.TICKET_REMINDER);
+        reminders = reminders[STORAGE_KEYS.TICKET_REMINDER];
+        var reminder = {};
+
+        if (id === null) {
+            reminder = {
+                id: new Date().getTime(),
+                ticketId,
+                description,
+                completedOn: null,
+                when
+            };
+
+            reminders.push(reminder);
+
+            chrome.alarms.create(String.format(ALARMS.TICKET_REMINDER, reminder.id), {when});
+        } 
+        else {
+            reminders = reminders.map((r) => {
+                if (+id === +r.id) {
+                    r.completedOn = completedOn;
+                    r.description = description;
+
+                    reminder = r;
+                }
+
+                return r;
+            });
+        }
+        
+        chromeAsync.storage.sync.set({ [STORAGE_KEYS.TICKET_REMINDER]: reminders });
+
+        return reminder.id;
+    },
+
+    /**
+     *  Gets a TicketReminder.
+     *
+     * @param {number|string} id
+     * @returns TicketReminder
+     */
+    async getReminder(id) {
+        var reminders = await chromeAsync.storage.sync.get(STORAGE_KEYS.TICKET_REMINDER);
+        reminders = reminders[STORAGE_KEYS.TICKET_REMINDER];
+
+        return reminders.filter((reminder) => +reminder.id === +id)[0];
+    },
+
+    /**
+     *  Gets all TicketReminders.
+     *
+     * @returns List<TicketReminder>
+     */
+    async getAllReminders() {
+        var reminders = await chromeAsync.storage.sync.get(STORAGE_KEYS.TICKET_REMINDER);
+        reminders = reminders[STORAGE_KEYS.TICKET_REMINDER];
+
+        return reminders;
     }
 
 }

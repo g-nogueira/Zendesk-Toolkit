@@ -6,7 +6,8 @@ const STORAGE_KEYS = {
     WATCHING_TICKETS: "watchingTickets",
     NOTIFICATIONS: "notifications",
     FILE_EXTENSIONS: "fileExtensions",
-    INTERVAL_RELOAD_WATCHING_TICKETS: "intervalReloadWatchingTickets"
+    INTERVAL_RELOAD_WATCHING_TICKETS: "intervalReloadWatchingTickets",
+    TICKET_REMINDER: "ticketReminder",
 };
 
 const STORAGE_DEFAULTS = {
@@ -15,7 +16,8 @@ const STORAGE_DEFAULTS = {
     [STORAGE_KEYS.WATCHING_TICKETS]: [],
     [STORAGE_KEYS.NOTIFICATIONS]: [],
     [STORAGE_KEYS.FILE_EXTENSIONS]: "jpg,png,jpeg,mp4",
-    [STORAGE_KEYS.INTERVAL_RELOAD_WATCHING_TICKETS]: "5"
+    [STORAGE_KEYS.INTERVAL_RELOAD_WATCHING_TICKETS]: "5",
+    [STORAGE_KEYS.TICKET_REMINDER]: []
 };
 
 const MESSAGE_ACTIONS = {
@@ -25,7 +27,8 @@ const MESSAGE_ACTIONS = {
 };
 
 const ALARMS = {
-    RELOAD_ALL_TICKETS: "reloadAllTickets"
+    RELOAD_ALL_TICKETS: "reloadAllTickets",
+    TICKET_REMINDER: "ticketReminder_{0}",
 };
 
 const MESSAGE_TEMPLATES = {

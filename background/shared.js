@@ -8,6 +8,43 @@ function createAlarm(name, when, periodInMinutes) {
     });
 }
 
+function refreshContextMenu() {
+    var parentId = chrome.contextMenus.create({
+        title: "Zendesk Tookit",
+        contexts: ["page", "selection"]
+    });
+
+    chrome.contextMenus.create({
+        title: "Watch Ticket",
+        parentId: parentId,
+        onclick: addTicketToWatchList
+    });
+
+    chrome.contextMenus.create({
+        title: "Remind Me",
+        parentId: parentId,
+        contexts: ["selection"],
+        onclick: createTicketReminder
+    });
+}
+
+async function createTicketReminder(info, tab) {
+    // Ex: "Call customer on 11/23/2020 16:15"
+    // Match [1] "Call customer "
+    // Match [2] "11/23/2020 16:15"
+    var selection = info.selectionText.match(/(.+)\s([0-9]{2}\/[0-9]{2}\/[0-9]{4}\s{1}[0-9]{2}:[0-9]{2})/);
+
+    var description = selection[1];
+    var date = new Date(selection[2]);
+
+    ticketHelper.createOrUpdateReminder({
+        ticketId: /[tickets]\/([0-9]+)/.exec(tab.url)[1],
+        description,
+        when: date.getTime()
+    });
+
+}
+
 async function addTicketToWatchList(info, tab) {
     var ticketId = /[tickets]\/([0-9]+)/.exec(tab.url)[1];
     var ticketURL = ticketHelper.getAgentUrl(ticketId);
@@ -122,15 +159,3 @@ async function syncTickets() {
     });
 }
 
-function refreshContextMenu() {
-    var parentId = chrome.contextMenus.create({
-        title: "Zendesk Tookit",
-        contexts: ["page"]
-    });
-
-    chrome.contextMenus.create({
-        title: "Watch Ticket",
-        parentId: parentId,
-        onclick: addTicketToWatchList
-    });
-}

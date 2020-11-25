@@ -30,7 +30,8 @@
         }
 
         #ulWatchlist,
-        #ulNotificationlist {
+        #ulNotificationlist,
+        #ulReminderlist {
             list-style: none;
             padding: 0;
         }
@@ -49,17 +50,21 @@
         }
 
         #ulWatchlist li,
+        /* #ulReminderlist li, */
         #ulNotificationlist li {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
         }
 
-        #ulWatchlist li div {
+        #ulWatchlist li div,
+        #ulReminderlist li div,
+        #ulNotificationlist li div {
             display: inline-block;
         }
 
-        #ulNotificationlist li #timestamp {
+        #ulNotificationlist li #timestamp,
+        #ulReminderlist li #when {
             margin-right: .2rem;
         }
 
@@ -78,6 +83,15 @@
             margin: 0 0.2rem;
         }
 
+        .flex {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* For Zendesk Comments */
         #dinamicContent {
             display: flex;
             width: 100%;
@@ -92,19 +106,11 @@
         #detailViewContent img {
             width: 100% !important;
         }
-
-        .flex {
-            display: flex;
-        }
-
-        .hidden {
-            display: none;
-        }
     </style>
 
-    <ul data-tabs>
-        <li><a data-tabby-default href="#qrContent">QR Code</a></li>
-        <li><a href="#countryCodesContent">Country Codes</a></li>
+    <ul data-tools-tabs>
+        <li><a href="#qrContent">QR Code</a></li>
+        <li><a data-tabby-default href="#countryCodesContent">Country Codes</a></li>
     </ul>
 
     <div id="qrContent">
@@ -348,30 +354,39 @@
         </div>
     </div>
 
-    <ul data-tabs>
+    <ul data-main-tabs>
         <li><a data-tabby-default href="#watchList">Watch List</a></li>
         <li><a href="#reminders">Reminders</a></li>
     </ul>
 
     <div id="watchList">
-    <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
-            <!-- <h3>Watch List</h3> -->
-        <a href="#" id="buttonReload">Reload</a>
+        <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
+            <h3>Watch List</h3>
+            <a href="#" id="buttonReload">Reload</a>
+        </div>
+
+        <ul id="ulWatchlist"></ul>
     </div>
 
-    <ul id="ulWatchlist"></ul>
+    <div id="reminders">
+        <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
+            <h3>Reminders</h3>
+            <a href="#" id="">Clear</a>
+        </div>
+
+        <ul id="ulReminderlist"></ul>
     </div>
+
 
     <div style="display: inline-flex; width: 100%; align-items: center; justify-content: space-between;">
         <h3>Notifications</h3>
         <a href="#" id="buttonClear">Clear</a>
     </div>
-
-
     <ul id="ulNotificationlist"></ul>
 
     <div id="detailViewContent" class="hidden"></div>
 
+    <!-- ============ TEMPLATES ============ -->
     <template id="notificationListItem">
         <li>
             <div id="buttonPreview" data-detail-id="">Details</div>
@@ -379,11 +394,6 @@
             <span id="message">Message</span>
         </li>
     </template>
-
-    <template id="notificationEmptyList">
-        <li>You don't have new notifications...</li>
-    </template>
-
     <template id="ticketListItem">
         <li>
             <div id="buttonRemove" title="Remove" data-ticket-id="">X</div>
@@ -393,7 +403,20 @@
             <a href="" id="ticketTitle"></a>
         </li>
     </template>
+    <template id="reminderListItem">
+        <li>
+            <div id="reminderWhen"></div>
+            <a href="" id="reminderTicketId"></a>
+            <div id="reminderDescription"></div>
+        </li>
+    </template>
 
+    <template id="notificationEmptyList">
+        <li>You don't have new notifications...</li>
+    </template>
+    <template id="reminderEmptyList">
+        <li>You don't have any reminders.</li>
+    </template>
     <template id="ticketEmptyList">
         <li>The list is empty...</li>
     </template>

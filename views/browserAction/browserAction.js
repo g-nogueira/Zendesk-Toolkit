@@ -1,7 +1,8 @@
 "use strict";
 
 (async () => {
-    var tabs = new Tabby('[data-tabs]');
+    var toolsTabs = new Tabby('[data-tools-tabs]');
+    var mainTabs = new Tabby('[data-main-tabs]');
 
     // As soon as the browseraction opens, Clear badge notifications
     chrome.browserAction.setBadgeText({ text: "" });
@@ -27,12 +28,14 @@
         },
         lists: {
             watchList: document.getElementById("ulWatchlist"),
+            reminderList: document.getElementById("ulReminderlist"),
             notificationList: document.getElementById("ulNotificationlist")
         }
     }
 
 
     reloadWatchList();
+    reloadReminderList();
     reloadNotificationList();
 
     HTMLElements.buttons.reloadWatchList.addEventListener("click", () =>
@@ -158,6 +161,37 @@
         }
     }
 
+    async function reloadReminderList() {
+        var DBReminderList = await ticketHelper.getAllReminders();
+
+        // Retrieves <templates> elements
+        var reminderListItem = document.querySelector('#reminderListItem');
+        var reminderEmptyList = document.querySelector('#reminderEmptyList');
+
+        // Cleans the <ul> children
+        HTMLElements.lists.reminderList.innerHTML = "";
+
+        if (DBReminderList.length === 0) {
+            // Inserts "Empty List" in <ul>
+            let node = reminderEmptyList.content.cloneNode(true);
+            HTMLElements.lists.reminderList.appendChild(node);
+
+        } else {
+            DBReminderList.forEach((reminder) => {
+                // Sets up the <li> elements and its properties
+                let node = reminderListItem.content.cloneNode(true);
+
+                node.querySelector("#reminderWhen").innerText = new Date(reminder.when).toLocaleString();
+                node.querySelector("#reminderTicketId").innerHTML = "#" + reminder.ticketId;
+                node.querySelector("#reminderTicketId").href = ticketHelper.getAgentUrl(reminder.ticketId);
+                node.querySelector("#reminderDescription").title = reminder.description;
+                node.querySelector("#reminderDescription").innerHTML = reminder.description;
+
+                HTMLElements.lists.reminderList.appendChild(node);
+            });
+        }
+    }
+
     function removeTicketFromWatchList(e) {
         var ticketId = e.target.dataset.ticketId;
         if (ticketId) {
@@ -175,7 +209,5 @@
             }
         });
     }
-
-
 
 })();
