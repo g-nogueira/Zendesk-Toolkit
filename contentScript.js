@@ -1,14 +1,15 @@
 "use strict";
 (async () => {
 
-    var fileExtension = (await chromeAsync.storage.sync.get(STORAGE_KEYS.FILE_EXTENSIONS))[STORAGE_KEYS.FILE_EXTENSIONS];
+    var fileExtension = await chromeAsync.storage.sync.get(STORAGE_KEYS.FILE_EXTENSIONS);
+    fileExtension = fileExtension[STORAGE_KEYS.FILE_EXTENSIONS];
 
 
     document.body.addEventListener("click", openImage);
 
     var windowObjectReference = null
     function openWindow(urlObj) {
-        var width = 500, height = 500;
+        var width = 800, height = 800;
 
         // Commented in order to allow multiple windows
         // if (windowObjectReference == null || windowObjectReference.closed) {
