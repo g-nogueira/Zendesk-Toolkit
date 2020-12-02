@@ -1,3 +1,4 @@
+/** Refreshes the context menus everytime this JS is executed. */
 refreshContextMenu();
 
 function createAlarm(name, when, periodInMinutes) {
@@ -8,6 +9,9 @@ function createAlarm(name, when, periodInMinutes) {
     });
 }
 
+/**
+ * Refreshes the context menus everytime this JS is executed.
+ */
 function refreshContextMenu() {
     var parentId = chrome.contextMenus.create({
         title: "Zendesk Tookit",
@@ -28,6 +32,12 @@ function refreshContextMenu() {
     });
 }
 
+/**
+ * Creates a ticket reminder.
+ *
+ * @param {*} info Info paramenter received from a contextMenu onclick
+ * @param {*} tab Tab paramenter received from a contextMenu onclick
+ */
 async function createTicketReminder(info, tab) {
     // Ex: "Call customer on 11/23/2020 16:15"
     // Match [1] "Call customer "
@@ -45,6 +55,12 @@ async function createTicketReminder(info, tab) {
 
 }
 
+/**
+ * Adds a ticket to watchlist.
+ *
+ * @param {*} info Info paramenter received from a contextMenu onclick
+ * @param {*} tab Tab paramenter received from a contextMenu onclick
+ */
 async function addTicketToWatchList(info, tab) {
     var ticketId = /[tickets]\/([0-9]+)/.exec(tab.url)[1];
     var ticketURL = ticketHelper.getAgentUrl(ticketId);
@@ -84,7 +100,7 @@ async function addTicketToWatchList(info, tab) {
 /**
  * Synchronizes local data with Zendesk server.
  *
- * @returns
+ * @returns Promise<void>
  */
 async function syncTickets() {
     var tikets = await ticketHelper.getAllTickets("local");
