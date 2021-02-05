@@ -8,11 +8,6 @@
     chrome.browserAction.setBadgeText({ text: "" });
     chrome.browserAction.setTitle({ title: "Zendesk Tookit" });
 
-    // Set up QRious
-    var qr = new QRious({ element: document.getElementById("qr") });
-    qr.value = " ";
-    qr.size = 200;
-
     // Set up HTML elements
     var HTMLElements = {
         inputs: {

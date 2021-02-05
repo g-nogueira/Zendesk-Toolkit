@@ -112,17 +112,9 @@
     <ul data-tabs>
         <li><a data-tabby-default href="#watchList">Watch List</a></li>
         <li><a href="#reminders">Reminders</a></li>
-        <li><a href="#qrContent">QR Code</a></li>
         <li><a href="#countryCodesContent">Country Codes</a></li>
     </ul>
 
-    <!-- ============ TAB CONTENT: QR CODE ============ -->
-    <div id="qrContent">
-        <div class="flex" style="flex-direction: column;width: 100%;align-items: center;justify-content: center;">
-            <canvas id="qr"></canvas>
-            <input type="text" style="width:100%" id="qrUrl" placeholder="Enter your URL here...">
-        </div>
-    </div>
     <!-- ============ TAB CONTENT: COUNTRY CODES ============ -->
     <div id="countryCodesContent">
         <div class="flex" style="flex-direction: column;width: 100%;align-items: center;justify-content: center; margin-top: 1rem;">
@@ -427,7 +419,6 @@
 
     <script src="/vendors/tabby/js/tabby.min.js"></script>
     <script src="/extensions/chromeAsync.js"></script>
-    <script src="/extensions/QRious.js"></script>
     <script src="/core/constants.js"></script>
     <script src="/core/notificationHelper.js"></script>
     <script src="/integrations/zendesk.js"></script>
