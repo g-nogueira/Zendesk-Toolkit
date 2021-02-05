@@ -1,8 +1,8 @@
 "use strict";
 
 (async () => {
-    var toolsTabs = new Tabby('[data-tools-tabs]');
-    var mainTabs = new Tabby('[data-main-tabs]');
+    // Initialize tabs.
+    var tabs = new Tabby('[data-tabs]');
 
     // As soon as the browseraction opens, Clear badge notifications
     chrome.browserAction.setBadgeText({ text: "" });
