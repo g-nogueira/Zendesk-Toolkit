@@ -11,7 +11,7 @@
 /api/v2beta/tickets/2377857/related
 - /api/v2/tickets/2377857.json
 /api/v2/tickets/2377857/audits.json?include=users
-
+/api/v2/users/{user_id}/tickets/assigned.json
 /api/v2/search/incremental?per_page=30&include=highlights&page=1&type=ticket&query=test
 /api/v2/tickets/show_many.json?ids={ids}
 
@@ -25,6 +25,18 @@ const zendesk = {
         },
         async tickets(ticketId) {
             var url = `https://supportoutsystems.zendesk.com/api/v2/tickets/${ticketId}.json`;
+            var resolvedPromise = await _fetch(url);
+
+            if (resolvedPromise.ok) {
+                var finalResponse = await resolvedPromise.json();
+                return finalResponse;
+            }
+            else {
+                return false;
+            }
+        },
+        async ticketsAssigned(userId) { 
+            var url = `https://supportoutsystems.zendesk.com/api/v2/users/${userId}/tickets/assigned.json`;
             var resolvedPromise = await _fetch(url);
 
             if (resolvedPromise.ok) {
